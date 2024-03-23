@@ -91,7 +91,7 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -99,6 +99,7 @@ vim.g.have_nerd_font = false
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
+vim.opt.relativenumber = true
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
@@ -147,13 +148,21 @@ vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
-
 -- Show which line your cursor is on
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- My own options
+vim.opt.winbar = '%=%m %f'
+vim.opt.tabstop = 4
+vim.opt.softtabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.foldmethod = 'manual'
+vim.opt.virtualedit = 'block'
+vim.opt.conceallevel = 0
+vim.cmd [[set formatoptions-=cro]]
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -176,10 +185,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -190,6 +199,71 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+-- My custom keymaps
+vim.keymap.set('v', 'J', ":m '<+1<CR>gv=gv")
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv")
+-- Move text up and down
+vim.keymap.set('x', 'J', ":move '>+1<CR>gv=gv")
+vim.keymap.set('x', 'K', ":move '<-2<CR>gv=gv")
+
+vim.keymap.set('n', 'J', 'mzJ`z')
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'Nzzzv')
+
+vim.keymap.set('n', 'Q', '<nop>')
+
+-- Press jk/kj fast to enter ESC
+vim.keymap.set('i', 'jk', '<ESC>')
+
+-- Append from inside mode
+vim.keymap.set('i', ',a', '<Esc>A')
+
+-- tabs
+vim.keymap.set('n', '<S-l>', '<cmd>tabnext<CR>')
+vim.keymap.set('n', '<S-h>', '<cmd>tabprevious<CR>')
+vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>')
+-- vim.keymap.set('n', '<leader>tc', '<cmd>tabclose<CR>')
+-- vim.cmd [[set showtabline=2]]
+-- vim.cmd [[set tabline=%!v:lua.require'utils'.tabline()]]
+vim.cmd [[set tabpagemax=10]]
+
+function _G.custom_tabline()
+  local s = ''
+  for i = 1, vim.fn.tabpagenr '$' do
+    -- Select the highlighting
+    local winnr = vim.fn.tabpagewinnr(i)
+    local buflist = vim.fn.tabpagebuflist(i)
+    local bufnr = buflist[winnr]
+    local bufname = vim.fn.bufname(bufnr)
+    local modified = vim.fn.getbufvar(bufnr, '&mod')
+
+    if i == vim.fn.tabpagenr() then
+      s = s .. '%#TabLineSel#'
+    else
+      s = s .. '%#TabLine#'
+    end
+
+    -- Append the tab page number
+    s = s .. ' [' .. i .. ']: '
+
+    -- Shorten the buffer name and check if it is modified
+    local modified_sign = modified == 1 and '+' or ''
+    s = s .. vim.fn.fnamemodify(bufname, ':t') .. modified_sign .. ' '
+
+    -- Close tab button
+    -- s = s .. '%#TabLine#%999X%X'
+  end
+  s = s .. '%#TabLineFill#%T'
+  return s
+end
+
+vim.o.tabline = '%!v:lua.custom_tabline()'
+-- vim.o.showtabline = 2
+
+-- CTRL + A to accept copilot suggestion
+vim.cmd [[imap <silent><script><expr> <C-a> copilot#Accept("\<CR>")]]
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -204,6 +278,16 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Save and restore cursor position on quit
+vim.api.nvim_create_autocmd('BufReadPost', {
+  pattern = '*',
+  callback = function()
+    local line = vim.fn.line
+    if line '\'"' > 1 and line '\'"' <= line '$' then
+      vim.cmd 'normal! g\'"'
+    end
+  end,
+})
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -347,11 +431,17 @@ require('lazy').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+        defaults = {
+          sorting_strategy = 'ascending',
+          layout_strategy = 'vertical',
+          mappings = {
+            i = {
+              ['<c-enter>'] = 'to_fuzzy_refine',
+              ['<c-j>'] = 'move_selection_next',
+              ['<c-k>'] = 'move_selection_previous',
+            },
+          },
+        },
         -- pickers = {}
         extensions = {
           ['ui-select'] = {
@@ -538,10 +628,21 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
+        clangd = {
+          capabilities = {
+            textDocument = {
+              completion = {
+                completionItem = {
+                  snippetSupport = true,
+                },
+              },
+            },
+            offsetEncoding = { 'utf-16' },
+          },
+        },
+        gopls = {},
+        pyright = {},
+        rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -680,9 +781,9 @@ require('lazy').setup({
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
-          ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<C-j>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
-          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<C-k>'] = cmp.mapping.select_prev_item(),
 
           -- Scroll the documentation window [b]ack / [f]orward
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -697,7 +798,6 @@ require('lazy').setup({
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
           ['<C-Space>'] = cmp.mapping.complete {},
-
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
           --  function $name($args)
@@ -740,9 +840,24 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      -- vim.cmd.colorscheme 'tokyonight-night'
 
       -- You can configure highlights by doing something like:
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'catppuccin/nvim',
+    init = function()
+      vim.cmd.colorscheme 'catppuccin-mocha'
+      vim.cmd.hi 'Comment gui=none'
+    end,
+  },
+  {
+    'projekt0n/github-nvim-theme',
+    priority = 1000, -- make sure to load this before all the other start plugins
+    init = function()
+      -- vim.cmd.colorscheme 'github_dark_dimmed'
       vim.cmd.hi 'Comment gui=none'
     end,
   },
@@ -768,6 +883,8 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
+      require('mini.pairs').setup()
+
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
@@ -791,7 +908,27 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = {
+        'bash',
+        'c',
+        'cpp',
+        'dockerfile',
+        'go',
+        'html',
+        'json',
+        'json5',
+        'jsonc',
+        'latex',
+        'lua',
+        'markdown',
+        'python',
+        'rust',
+        'sql',
+        'toml',
+        'vim',
+        'vimdoc',
+        'yaml',
+      },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -827,16 +964,16 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.lint',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
