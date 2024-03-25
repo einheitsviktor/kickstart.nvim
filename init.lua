@@ -843,14 +843,14 @@ require('lazy').setup({
       -- vim.cmd.colorscheme 'tokyonight-night'
 
       -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.hi 'Comment gui=italic'
     end,
   },
   {
     'catppuccin/nvim',
     init = function()
       vim.cmd.colorscheme 'catppuccin-mocha'
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.hi 'Comment gui=italic'
     end,
   },
   {
@@ -858,7 +858,7 @@ require('lazy').setup({
     priority = 1000, -- make sure to load this before all the other start plugins
     init = function()
       -- vim.cmd.colorscheme 'github_dark_dimmed'
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.hi 'Comment gui=italic'
     end,
   },
 
