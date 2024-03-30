@@ -264,6 +264,10 @@ vim.o.tabline = '%!v:lua.custom_tabline()'
 
 -- CTRL + A to accept copilot suggestion
 vim.cmd [[imap <silent><script><expr> <C-a> copilot#Accept("\<CR>")]]
+-- Set copilot to deisabled by default
+vim.g.copilot_enabled = 0
+vim.g.copilot_no_tab_map = true
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
