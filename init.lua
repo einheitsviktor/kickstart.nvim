@@ -99,7 +99,7 @@ vim.g.have_nerd_font = true
 --  For more options, you can see `:help option-list`
 
 -- Make line numbers default
-vim.opt.relativenumber = true
+vim.opt.relativenumber = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
@@ -219,6 +219,10 @@ vim.keymap.set('i', 'jk', '<ESC>')
 
 -- Append from inside mode
 vim.keymap.set('i', ',a', '<Esc>A')
+
+-- Navigate
+vim.keymap.set('n', 'j', 'gj')
+vim.keymap.set('n', 'k', 'gk')
 
 -- tabs
 vim.keymap.set('n', '<S-l>', '<cmd>tabnext<CR>')
