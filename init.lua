@@ -892,6 +892,7 @@ require('lazy').setup({
   {
     'catppuccin/nvim',
     init = function()
+      -- vim.cmd.colorscheme 'catppuccin-mocha'
       vim.cmd.colorscheme 'catppuccin-mocha'
       vim.cmd.hi 'Comment gui=italic'
     end,
@@ -903,6 +904,10 @@ require('lazy').setup({
       -- vim.cmd.colorscheme 'github_dark_dimmed'
       vim.cmd.hi 'Comment gui=italic'
     end,
+  },
+  -- Lua
+  {
+    'tjdevries/colorbuddy.nvim',
   },
 
   -- Highlight todo, notes, etc in comments
@@ -1042,3 +1047,10 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Hacky solution to set the 'correct' colorbuddy theme
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    vim.cmd 'colorscheme gruvbuddy'
+  end,
+})
