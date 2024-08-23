@@ -893,8 +893,8 @@ require('lazy').setup({
     'catppuccin/nvim',
     priority = 1000, -- make sure to load this before all the other start plugins
     init = function()
-      -- vim.cmd.colorscheme 'catppuccin'
-      -- vim.cmd.hi 'Comment gui=italic'
+      vim.cmd.colorscheme 'catppuccin'
+      vim.cmd.hi 'Comment gui=italic'
     end,
   },
   {
@@ -1047,4 +1047,4 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-vim.cmd.colorscheme 'gruvbuddy'
+-- vim.cmd.colorscheme 'gruvbuddy'
