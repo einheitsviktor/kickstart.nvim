@@ -228,7 +228,7 @@ vim.keymap.set('n', 'N', 'Nzzzv')
 vim.keymap.set('n', 'Q', '<nop>')
 
 -- Press jk/kj fast to enter ESC
-vim.keymap.set('i', 'jk', '<ESC>')
+-- vim.keymap.set('i', 'jk', '<ESC>')
 
 -- Append from inside mode
 vim.keymap.set('i', ',a', '<Esc>A')
