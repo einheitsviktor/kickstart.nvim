@@ -905,6 +905,7 @@ require('lazy').setup({
       vim.cmd.hi 'Comment gui=italic'
     end,
   },
+  { 'rose-pine/neovim', name = 'rose-pine' },
   -- Lua
   {
     'tjdevries/colorbuddy.nvim',
