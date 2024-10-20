@@ -681,7 +681,22 @@ require('lazy').setup({
             offsetEncoding = { 'utf-16' },
           },
         },
-        gopls = {},
+        gopls = {
+          settings = {
+            gopls = {
+              analyses = {
+                unusedparams = true,
+                -- nilness = true,
+                unusedwrite = true,
+                useany = true,
+                shadow = true,
+                fieldalignment = true,
+                -- Add more analyses as needed
+              },
+              staticcheck = true,
+            },
+          },
+        },
         pyright = {},
         rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
