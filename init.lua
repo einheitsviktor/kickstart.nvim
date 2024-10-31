@@ -583,6 +583,8 @@ require('lazy').setup({
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
+      local navic = require 'nvim-navic'
+
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
@@ -635,6 +637,12 @@ require('lazy').setup({
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+
+          -- Attach nvim-navic if documentSymbolProvider is available
+          local client = vim.lsp.get_client_by_id(event.data.client_id)
+          if client and client.server_capabilities and client.server_capabilities.documentSymbolProvider then
+            navic.attach(client, event.buf)
+          end
 
           -- The following two autocommands are used to highlight references of the
           -- word under your cursor when your cursor rests there for a little while.
@@ -933,6 +941,14 @@ require('lazy').setup({
     'tjdevries/colorbuddy.nvim',
   },
   { 'ellisonleao/gruvbox.nvim', priority = 1000, config = true, opts = ... },
+  {
+    'SmiteshP/nvim-navic',
+    config = function()
+      require('nvim-navic').setup {
+        highlight = true,
+      }
+    end,
+  },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
