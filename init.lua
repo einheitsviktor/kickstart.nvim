@@ -155,6 +155,7 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 -- My own options
+vim.opt.writebackup = false
 vim.opt.winbar = '%=%m %F'
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
