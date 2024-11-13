@@ -1008,7 +1008,7 @@ require('lazy').setup({
         'json',
         'json5',
         'jsonc',
-        'latex',
+        -- 'latex',
         'lua',
         'markdown',
         'python',
