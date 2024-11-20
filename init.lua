@@ -87,8 +87,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-vim.g.mapleader = ','
-vim.g.maplocalleader = ','
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = true
@@ -191,7 +191,7 @@ vim.api.nvim_set_keymap('c', '<C-j>', '<Down>', { noremap = true })
 vim.api.nvim_set_keymap('c', '<C-k>', '<Up>', { noremap = true })
 
 -- Use leader+y to copy to clipboard
-vim.api.nvim_set_keymap('n', '<leader>y', '"+yy', { noremap = true })
+vim.api.nvim_set_keymap('n', '<leader>y', '"+y$', { noremap = true })
 vim.api.nvim_set_keymap('v', '<leader>y', '"+y', { noremap = true })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
@@ -1005,6 +1005,7 @@ require('lazy').setup({
         'dockerfile',
         'go',
         'html',
+        'javascript',
         'json',
         'json5',
         'jsonc',
