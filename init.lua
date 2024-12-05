@@ -187,8 +187,8 @@ end, { desc = 'Go to next [D]iagnostic message' })
 -- vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
-vim.api.nvim_set_keymap('c', '<C-j>', '<Down>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<C-k>', '<Up>', { noremap = true })
+-- vim.api.nvim_set_keymap('c', '<C-j>', '<Down>', { noremap = true })
+-- vim.api.nvim_set_keymap('c', '<C-k>', '<Up>', { noremap = true })
 
 -- Use leader+y to copy to clipboard
 vim.api.nvim_set_keymap('n', '<leader>y', '"+y$', { noremap = true })
@@ -483,8 +483,8 @@ require('lazy').setup({
           mappings = {
             i = {
               ['<c-enter>'] = 'to_fuzzy_refine',
-              ['<c-j>'] = 'move_selection_next',
-              ['<c-k>'] = 'move_selection_previous',
+              -- ['<c-j>'] = 'move_selection_next',
+              -- ['<c-k>'] = 'move_selection_previous',
             },
           },
         },
@@ -854,9 +854,9 @@ require('lazy').setup({
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
-          ['<C-j>'] = cmp.mapping.select_next_item(),
+          -- ['<C-j>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
-          ['<C-k>'] = cmp.mapping.select_prev_item(),
+          -- ['<C-k>'] = cmp.mapping.select_prev_item(),
 
           -- Scroll the documentation window [b]ack / [f]orward
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
