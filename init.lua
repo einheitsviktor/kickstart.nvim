@@ -317,6 +317,18 @@ vim.api.nvim_create_autocmd('BufReadPost', {
     end
   end,
 })
+
+-- In your init.lua
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'tex',
+  callback = function()
+    vim.keymap.set('n', '<leader>c', ':w<CR>:!pdflatex -interaction=nonstopmode %<CR>', {
+      buffer = true, -- Make the mapping local to the buffer
+      silent = true,
+    })
+  end,
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -695,17 +707,17 @@ require('lazy').setup({
           },
         },
         gopls = {
-          settings = {
-            gopls = {
-              analyses = {
-                unusedparams = true,
-                -- nilness = true,
-                unusedwrite = true,
-                useany = true,
-                shadow = true,
-                fieldalignment = true,
-                -- Add more analyses as needed
-              },
+          gopls = {
+            settings = {
+              -- fieldalignment = {
+              --   unusedparams = true,
+              --   -- nilness = true,
+              --   unusedwrite = true,
+              --   useany = true,
+              --   shadow = true,
+              --   fieldalignment = true,
+              --   -- Add more analyses as needed
+              -- },
               staticcheck = true,
             },
           },
@@ -754,6 +766,12 @@ require('lazy').setup({
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        -- Specify which servers to install
+        ensure_installed = vim.tbl_keys(servers or {}),
+
+        -- Enable automatic installation of servers that are set up via lspconfig
+        automatic_installation = true,
+
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
